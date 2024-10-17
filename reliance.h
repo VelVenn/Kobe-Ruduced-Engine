@@ -19,6 +19,7 @@
 #include <sstream>
 #include <tchar.h>
 #include <string>
+#include <unordered_map>
 
 #include "Animation.h"
 #include "Charactor.h"
