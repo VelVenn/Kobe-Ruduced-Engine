@@ -23,7 +23,7 @@ public:
 		this->msg = msg;
 	}
 
-	~Widget() = default;
+	virtual ~Widget() = default;
 
 	void getPressEvent()
 	{
@@ -222,14 +222,14 @@ public:
 		}
 	}
 
-private:
+protected:
 	struct coord
 	{
 		float x = 0.0f;
 		float y = 0.0f;
 	}mousePos;
 
-private:
+protected:
 	ExMessage* msg = nullptr;
 
 	enum class keyPress
@@ -265,4 +265,111 @@ private:
 	};
 
 	unordered_map<keyPress, bool> keyState; // ¼üÅÌ×´Ì¬¹þÏ£±í
+};
+
+class Button :Widget
+{
+public:
+	Button() = default;
+	Button(ExMessage* msg) :Widget(msg) {};
+	Button
+	(
+		ExMessage* msg, IMAGE* unpressedImg, IMAGE* pressedImg, IMAGE* disabledImg
+	)
+		:Widget(msg), unpressedImg(unpressedImg), pressedImg(pressedImg), disabledImg(disabledImg) {};
+
+	~Button() override
+	{
+		if (unpressedImg != nullptr)
+		{
+			delete unpressedImg;
+		}
+		if (pressedImg != nullptr)
+		{
+			delete pressedImg;
+		}
+		if (disabledImg != nullptr)
+		{
+			delete disabledImg;
+		}
+	}
+
+	Button& setButtonPos(int x, int y)
+	{
+		buttonPos.x = x;
+		buttonPos.y = y;
+		return *this;
+	}
+
+	Button& setButtonSize(int w, int h)
+	{
+		buttonSize.w = w;
+		buttonSize.h = h;
+		return *this;
+	}
+
+	Button& setUnpressedImg(IMAGE* img)
+	{
+		unpressedImg = img;
+		return *this;
+	}
+
+	Button& setPressedImg(IMAGE* img)
+	{
+		pressedImg = img;
+		return *this;
+	}
+
+	Button& setDisabledImg(IMAGE* img)
+	{
+		disabledImg = img;
+		return *this;
+	}
+
+	void drawButton()
+	{
+		if (unpressedImg == nullptr || pressedImg == nullptr || disabledImg == nullptr)
+		{
+			return;
+		}
+
+		if (!isActivated)
+		{
+			if (disabledImg != nullptr)
+			{
+				putImage_regBack(buttonPos.x, buttonPos.y, disabledImg);
+			}
+			return;
+		}
+
+		if (keyState[keyPress::MLK] && mousePos.x >= buttonPos.x && mousePos.x <= buttonPos.x + buttonSize.w
+			&& mousePos.y >= buttonPos.y && mousePos.y <= buttonPos.y + buttonSize.h)
+		{
+			if (pressedImg != nullptr)
+			{
+				putImage_regBack(buttonPos.x, buttonPos.y, pressedImg);
+			}
+		}
+		else
+		{
+			putImage_regBack(buttonPos.x, buttonPos.y, unpressedImg);
+		}
+	}
+
+private:
+	IMAGE* unpressedImg = nullptr; // Î´°´ÏÂÊ±Í¼Æ¬
+	IMAGE* pressedImg = nullptr; // °´ÏÂÊ±Í¼Æ¬
+	IMAGE* disabledImg = nullptr; // ½ûÓÃÊ±Í¼Æ¬
+
+private:
+	bool isActivated = true;
+
+private:
+	POINT buttonPos = { 0, 0 };
+
+	struct size
+	{
+		int w = 0;
+		int h = 0;
+	}buttonSize;
 };
