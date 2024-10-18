@@ -24,4 +24,5 @@
 #include "Animation.h"
 #include "Charactor.h"
 #include "tstring.h"
+#include "Widget.h"
 #endif
