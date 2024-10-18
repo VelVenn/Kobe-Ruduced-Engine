@@ -12,7 +12,7 @@
 
 using namespace std;
 
-class Event
+class Event // 事件类
 {
 public:
 	Event(ExMessage* msg)
@@ -87,7 +87,7 @@ public:
 		return cursorPos;
 	}
 
-	tstring getPressedKey()
+	tstring getPressedKey() const
 	{
 		for (int i = 0; i < keyState.size(); i++)
 		{
@@ -96,7 +96,12 @@ public:
 				return getKeyName(i);
 			}
 		}
-		return _T(""); // 使用 _T 宏来支持 tstring
+		return _T("");
+	}
+
+	bool isKeyPressed(int vkcode) const
+	{
+		return keyState[vkcode];
 	}
 
 protected:
@@ -109,7 +114,8 @@ protected:
 	vector<bool> keyState = vector<bool>(256, false); // true: pressed, false: unpressed
 
 private:
-	tstring getKeyName(int vkcode)
+	tstring getKeyName(int vkcode) const
+		// 获取按键名称
 	{
 		switch (vkcode)
 		{
@@ -128,9 +134,45 @@ private:
 		case VK_ESCAPE: return _T("Esc");
 		default:
 			if (vkcode >= 'A' && vkcode <= 'Z' || vkcode >= '0' && vkcode <= '9')
-				return tstring(1, TCHAR(vkcode)); // 将键盘字母转为 TCHAR
+				return tstring(1, TCHAR(vkcode));
 			else
 				return _T("Unknown");
 		}
 	}
+};
+
+class Widget // 控件类
+{
+public:
+	struct Size
+	{
+		int w = 0;
+		int h = 0;
+	};
+
+public:
+	Widget(POINT pos, Size size) : widgetPos(pos), widgetSize(size)
+	{
+		rigion.left = pos.x;
+		rigion.top = pos.y;
+		rigion.right = pos.x + size.w;
+		rigion.bottom = pos.y + size.h;
+	}
+
+	Widget() = default;
+
+	virtual ~Widget() = default;
+
+public:
+	virtual void draw() = 0;
+
+	virtual void update() = 0;
+
+	virtual void handleEvent(Event& event) = 0;
+
+protected:
+	POINT widgetPos = { 0,0 };
+	Size widgetSize = { 0,0 };
+
+	RECT rigion = { 0,0,0,0 };
 };

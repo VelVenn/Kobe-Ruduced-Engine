@@ -8,6 +8,7 @@
 #include <conio.h>
 #include <math.h>
 #include "Animation.h"
+#include "Widget.h"
 #include "tstring.h"
 
 #define PLAYER_SPEED 450.0F
@@ -98,6 +99,12 @@ public:
 		moveR = new Animation(bPathR, rFrNum, rFrGap);
 	}
 
+	void setEvent(Event* event)
+		// 设置事件
+	{
+		this->event = event;
+	}
+
 	void setRolePos(float roleX, float roleY)
 		// 设置角色位置
 	{
@@ -128,53 +135,15 @@ public:
 		loadimage(Shadow, shadowPath.c_str());
 	}
 
-	void getEvent(const ExMessage& key)
+	void getEvent()
+		// 获取事件
 	{
-		if (key.message == WM_KEYDOWN)
+		if (event != nullptr)
 		{
-			LOG("Key Down: " << key.vkcode);
-			switch (key.vkcode)
-			{
-			case VK_UP:
-			case 'W':
-				isPressKey[0] = true;
-				break;
-			case VK_DOWN:
-			case 'S':
-				isPressKey[1] = true;
-				break;
-			case VK_LEFT:
-			case 'A':
-				isPressKey[2] = true;
-				break;
-			case VK_RIGHT:
-			case 'D':
-				isPressKey[3] = true;
-				break;
-			}
-		}
-		else if (key.message == WM_KEYUP)
-		{
-			LOG("Key Up: " << key.vkcode);
-			switch (key.vkcode)
-			{
-			case VK_UP:
-			case 'W':
-				isPressKey[0] = false;
-				break;
-			case VK_DOWN:
-			case 'S':
-				isPressKey[1] = false;
-				break;
-			case VK_LEFT:
-			case 'A':
-				isPressKey[2] = false;
-				break;
-			case VK_RIGHT:
-			case 'D':
-				isPressKey[3] = false;
-				break;
-			}
+			isPressKey[0] = event->isKeyPressed(VK_UP) || event->isKeyPressed('W');
+			isPressKey[1] = event->isKeyPressed(VK_DOWN) || event->isKeyPressed('S');
+			isPressKey[2] = event->isKeyPressed(VK_LEFT) || event->isKeyPressed('A');
+			isPressKey[3] = event->isKeyPressed(VK_RIGHT) || event->isKeyPressed('D');
 		}
 	}
 
@@ -325,6 +294,8 @@ public:
 	{
 		return { deltaX, deltaY };
 	}
+protected:
+	Event* event = nullptr;
 
 protected:
 	float roleSpeed = 0.0f; // 角色速度
