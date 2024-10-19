@@ -9,7 +9,7 @@
 using namespace std;
 
 #define _BR_MAIN
-#define _DEBUG_
+
 
 #ifdef _BR_BUTTON
 
