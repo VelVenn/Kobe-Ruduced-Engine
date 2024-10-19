@@ -117,11 +117,12 @@ public:
 		roleH = charH;
 	}
 
-	void setShadow(tstring shadowPath, int shadowWidth, int shadowHeight)
+	void setShadow(tstring shadowPath, int shadowWidth, int shadowHeight, float heightRatio = 0.0f)
 		// 设置角色阴影
 	{
 		shadowW = shadowWidth;
 		shadowH = shadowHeight;
+		shRatio = heightRatio;
 
 		Shadow = new IMAGE();
 		loadimage(Shadow, shadowPath.c_str());
@@ -225,7 +226,7 @@ public:
 		}
 	}
 
-	virtual void Draw(float shRatio = 0)
+	virtual void Draw()
 		// shRatio: 阴影高度比例
 	{
 		updateState(); // 更新角色状态
@@ -295,6 +296,7 @@ protected:
 	int roleH = 0; // 角色高度
 	int shadowW = -1; // 阴影宽度
 	int shadowH = -1; // 阴影高度
+	float shRatio = 0.0f; // 阴影高度比例
 
 protected:
 	enum class RoleState

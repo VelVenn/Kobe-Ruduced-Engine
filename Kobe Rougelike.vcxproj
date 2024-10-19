@@ -132,6 +132,7 @@
     <ClInclude Include="Charactor.h" />
     <ClInclude Include="reliance.h" />
     <ClInclude Include="tstring.h" />
+    <ClInclude Include="UIElement.h" />
     <ClInclude Include="Widget.h" />
   </ItemGroup>
   <ItemGroup>

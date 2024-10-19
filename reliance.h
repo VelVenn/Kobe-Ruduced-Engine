@@ -22,9 +22,11 @@
 #include <tchar.h>
 #include <string>
 #include <unordered_map>
+#include <memory>
 
 #include "Animation.h"
 #include "Charactor.h"
 #include "tstring.h"
+#include "UIElement.h"
 #include "Widget.h"
 #endif

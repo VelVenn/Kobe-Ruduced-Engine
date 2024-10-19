@@ -25,6 +25,9 @@
     <Filter Include="头文件\Game Entrance">
       <UniqueIdentifier>{e7664464-88ca-473f-9bfc-a3972fda1c43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Engine\UI Element">
+      <UniqueIdentifier>{97934567-18f5-481e-83b8-bc781a49d0ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Charactor.h">
@@ -41,6 +44,9 @@
     </ClInclude>
     <ClInclude Include="reliance.h">
       <Filter>头文件\Game Entrance</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement.h">
+      <Filter>头文件\Engine\UI Element</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
