@@ -1,16 +1,16 @@
 #pragma once
 
-#include <graphics.h>
-#include <conio.h>
-#include <vector>
-#include <string>
-#include <windows.h>
-#include <sstream>
-#include <cstdlib>
-#include <ctime>
-#include "Widget.h"
 #include "Charactor.h"
 #include "tstring.h"
+#include "Widget.h"
+#include <conio.h>
+#include <cstdlib>
+#include <ctime>
+#include <graphics.h>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <windows.h>
 
 using namespace std;
 
@@ -228,7 +228,7 @@ public:
 	{
 		player->Move(*deltaT);
 
-		bulletOrbitPlayer(*bulletList, *player, *deltaT, 3.0, 85.0, 30.0, 3.0); // 子弹绕玩家旋转
+		bulletOrbitPlayer(*bulletList, *player, *deltaT, 2.0, 85.0, 30.0, 3.0); // 子弹绕玩家旋转
 
 		tryGenEnemy(*enemyList, *enemyPool, 15, *deltaTick, 400); // 生成敌人
 

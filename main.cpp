@@ -102,9 +102,9 @@ int main()
 		.setHoverImg(_T("Lib/Button/Game menu/Exit/hover.png"))
 		.setPressedImg(_T("Lib/Button/Game menu/Exit/pressed.png"));
 
-	Player kenshi(_T("Lib/Kenshi/Idle/L_"), _T("Lib/Kenshi/Idle/R_"), 4, 4, 66, 66, 64, 80, 500.0f);
+	Player kenshi(_T("Lib/Kenshi/Idle/L_"), _T("Lib/Kenshi/Idle/R_"), 4, 4, 100, 100, 64, 80, 500.0f);
 	kenshi.setShadow(_T("Lib/Kenshi/shadow_player.png"), 32, 20, 1.2f);
-	kenshi.setMoveAnime(_T("Lib/Kenshi/Run/L_"), _T("Lib/Kenshi/Run/R_"), 8, 8, 52, 52);
+	kenshi.setMoveAnime(_T("Lib/Kenshi/Run/L_"), _T("Lib/Kenshi/Run/R_"), 8, 8, 66, 66);
 	kenshi.setHittingBox(60, 75);
 	kenshi.setEvent(&event);
 
@@ -166,9 +166,9 @@ int main()
 		FlushBatchDraw(); // 刷新画面
 
 		DWORD end_loop = GetTickCount();
-		if (end_loop - start_loop < 1000 / 120)
+		if (end_loop - start_loop < 1000 / 80)
 		{
-			Sleep(1000 / 120 - (end_loop - start_loop)); // 控制程序运行帧率
+			Sleep(1000 / 80 - (end_loop - start_loop)); // 控制程序运行帧率
 		}
 
 	}

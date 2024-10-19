@@ -1,12 +1,12 @@
 #pragma once
 
-#include <vector>
+#include "tstring.h"
+#include <conio.h>
+#include <graphics.h>
 #include <string>
 #include <tchar.h>
-#include <graphics.h>
+#include <vector>
 #include <windows.h>
-#include <conio.h>
-#include "tstring.h"
 
 using namespace std;
 

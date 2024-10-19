@@ -9,20 +9,20 @@
 
 
 
-#include <graphics.h>
 #include <conio.h>
-#include <vector>
 #include <cstdlib>
 #include <ctime>
-#include <numbers>
-#include <math.h>
-#include <windows.h>
+#include <graphics.h>
 #include <iostream>
-#include <sstream>
-#include <tchar.h>
-#include <string>
-#include <unordered_map>
+#include <math.h>
 #include <memory>
+#include <numbers>
+#include <sstream>
+#include <string>
+#include <tchar.h>
+#include <unordered_map>
+#include <vector>
+#include <windows.h>
 
 #include "Animation.h"
 #include "Charactor.h"

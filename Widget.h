@@ -1,14 +1,15 @@
 #pragma once
 
-#include <graphics.h>
-#include <conio.h>
-#include <tchar.h>
-#include <vector>
-#include <string>
-#include <windows.h>
-#include <unordered_map>
-#include "tstring.h"
 #include "Animation.h"
+#include "tstring.h"
+#include <conio.h>
+#include <graphics.h>
+#include <string>
+#include <tchar.h>
+#include <unordered_map>
+#include <vector>
+#include <windows.h>
+#include <chrono>
 
 using namespace std;
 
@@ -42,6 +43,7 @@ public:
 			break;
 		case WM_KEYUP:
 			keyState[msg->vkcode] = false; // 按键释放
+			lastKeyUpTimes[msg->vkcode] = chrono::steady_clock::now(); // 记录按键释放时间
 			break;
 		default:
 			break;
@@ -68,17 +70,17 @@ public:
 		case WM_LBUTTONUP: // 鼠标左键释放
 			keyState[VK_LBUTTON] = false;
 			break;
-		case WM_RBUTTONDOWN: // 鼠标右键按下
-			keyState[VK_RBUTTON] = true;
-			break;
 		case WM_RBUTTONUP: // 鼠标右键释放
 			keyState[VK_RBUTTON] = false;
+			lastKeyUpTimes[VK_RBUTTON] = chrono::steady_clock::now();
 			break;
 		case WM_MBUTTONDOWN: // 鼠标中键按下
 			keyState[VK_MBUTTON] = true;
+			lastKeyUpTimes[VK_MBUTTON] = chrono::steady_clock::now();
 			break;
 		case WM_MBUTTONUP: // 鼠标中键释放
 			keyState[VK_MBUTTON] = false;
+			lastKeyUpTimes[VK_MBUTTON] = chrono::steady_clock::now();
 			break;
 		default:
 			break;
@@ -108,6 +110,11 @@ public:
 		return keyState[vkcode];
 	}
 
+	chrono::steady_clock::time_point getLastKeyUpTime(int vkcode) const
+	{
+		return lastKeyUpTimes[vkcode];
+	}
+
 protected:
 	ExMessage* msg = nullptr; // 外部设备消息
 
@@ -116,6 +123,9 @@ protected:
 
 protected:
 	vector<bool> keyState = vector<bool>(256, false); // true: pressed, false: unpressed
+
+	vector<chrono::steady_clock::time_point> lastKeyUpTimes 
+		= vector<chrono::steady_clock::time_point>(256, chrono::steady_clock::now()); // 记录按键释放时间
 
 private:
 	tstring getKeyName(int vkcode) const

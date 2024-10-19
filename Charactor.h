@@ -1,15 +1,16 @@
 #pragma once
 
-#include <vector>
+#include "Animation.h"
+#include "tstring.h"
+#include "Widget.h"
+#include <conio.h>
+#include <graphics.h>
+#include <math.h>
 #include <string>
 #include <tchar.h>
-#include <graphics.h>
+#include <vector>
 #include <windows.h>
-#include <conio.h>
-#include <math.h>
-#include "Animation.h"
-#include "Widget.h"
-#include "tstring.h"
+#include <chrono>
 
 #define PLAYER_SPEED 450.0F
 #define SCREEN_WIDTH 1280
@@ -165,7 +166,7 @@ public:
 
 		float length = sqrt(moveX * moveX + moveY * moveY);
 
-		if (length > 0)
+		if (length >= 1.0f)
 		{
 			moveX /= length;
 			moveY /= length;
@@ -213,16 +214,44 @@ public:
 		}
 	}
 
-	void updateState()
-		// 更新角色状态
+	bool isKeyActive(int keyCode, int wasdCode, Event* event, chrono::milliseconds threshold)
+		// keyCode: 方向键码, wasdCode: WASD键码, event: 按键事件, threshold: 松开时间阈值
 	{
-		if (deltaX == 0 && deltaY == 0)
+		auto now = chrono::steady_clock::now();
+		bool keyPressed = event->isKeyPressed(keyCode);
+		bool wasdPressed = event->isKeyPressed(wasdCode);
+
+		return (keyPressed && (now - event->getLastKeyUpTime(keyCode) < threshold)) ||
+			(wasdPressed && (now - event->getLastKeyUpTime(wasdCode) < threshold));
+	}
+
+	void updateState() {
+		const int keyMap[4] = { VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT }; // 方向键映射
+		const int wasdMap[4] = { 'W', 'S', 'A', 'D' }; // WASD映射
+		const auto threshold = chrono::milliseconds(600); // 松开时间阈值
+
+		bool isMoving = false;
+
+		// 检测是否有按键活动
+		for (int i = 0; i < 4; ++i) {
+			if (isPressKey[i] || isKeyActive(keyMap[i], wasdMap[i], event, threshold)) {
+				isMoving = true;
+				break;
+			}
+		}
+
+		if (fabs(deltaX) > 1.0f || fabs(deltaY) > 1.0f) {
+			isMoving = true;
+		}
+
+		// 当上下键只有一个被按下，或者左右键只有一个被按下，且位移变化大于设定阈值时才算移动
+		if (isPressKey[0] ^ isPressKey[1] || isPressKey[2] ^ isPressKey[3])
 		{
-			currentState = RoleState::Idle;
+			currentState = isMoving ? RoleState::Moving : RoleState::Idle;
 		}
 		else
 		{
-			currentState = RoleState::Moving;
+			currentState = RoleState::Idle;
 		}
 	}
 
