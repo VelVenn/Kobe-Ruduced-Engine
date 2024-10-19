@@ -147,7 +147,7 @@ public:
 		}
 	}
 
-	void Move(float deltaTime = 1.0f)
+	virtual void Move(float deltaTime = 1.0f)
 		// deltaTime: 主循环每帧时间间隔
 	{
 		float moveX = 0.0f;
@@ -233,7 +233,7 @@ public:
 		}
 	}
 
-	void Draw(float shRatio = 0)
+	virtual void Draw(float shRatio = 0)
 		// shRatio: 阴影高度比例
 	{
 		updateState(); // 更新角色状态
@@ -488,7 +488,7 @@ public:
 		const Player& player, float deltaTime,
 		float lockDistance = 0.1f, float minMoveThreshold = 0.01f,
 		float slowDownDist = 10.0f
-	)
+	)   
 		// player: 玩家角色, deltaTime: 主循环每帧时间间隔 
 		// lockDistance: 锁定距离, minMoveThreshold: 最小移动阈值, slowDownDist: 减速距离
 	{

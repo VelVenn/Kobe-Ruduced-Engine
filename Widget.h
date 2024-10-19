@@ -151,7 +151,7 @@ public:
 	};
 
 public:
-	Widget(POINT pos, Size size) : widgetPos(pos), widgetSize(size)
+	Widget(POINT pos, Size size, Event* event) : widgetPos(pos), widgetSize(size), event(event)
 	{
 		rigion.left = pos.x;
 		rigion.top = pos.y;
@@ -159,20 +159,222 @@ public:
 		rigion.bottom = pos.y + size.h;
 	}
 
+	Widget(Size size, Event* event) : widgetSize(size), event(event) {}
+
 	Widget() = default;
 
 	virtual ~Widget() = default;
+public:
+
+	Widget& setRegion(POINT pos = { INT_MAX,INT_MAX }, Size size = { 0,0 })
+	{
+		if (pos.x != INT_MAX && pos.y != INT_MAX)
+		{
+			widgetPos = pos;
+		}
+		if (size.w != 0 && size.h != 0)
+		{
+			widgetSize = size;
+		}
+
+		rigion.left = widgetPos.x;
+		rigion.top = widgetPos.y;
+		rigion.right = widgetPos.x + widgetSize.w;
+		rigion.bottom = widgetPos.y + widgetSize.h;
+
+		return *this;
+	}
+
+	Widget& setPos(POINT pos)
+	{
+		widgetPos = pos;
+		rigion.left = pos.x;
+		rigion.top = pos.y;
+		return *this;
+	}
+
+	Widget& setSize(Size size)
+	{
+		widgetSize = size;
+		rigion.right = widgetPos.x + size.w;
+		rigion.bottom = widgetPos.y + size.h;
+		return *this;
+	}
+
+	Widget& setEvent(Event* event)
+	{
+		this->event = event;
+		return *this;
+	}
 
 public:
 	virtual void draw() = 0;
 
-	virtual void update() = 0;
+	virtual void updateStatus() = 0;
 
-	virtual void handleEvent(Event& event) = 0;
+public:
+	POINT getPos() const
+	{
+		return widgetPos;
+	}
+
+	Size getSize() const
+	{
+		return widgetSize;
+	}
+
+	RECT getRigion() const
+	{
+		return rigion;
+	}
 
 protected:
 	POINT widgetPos = { 0,0 };
 	Size widgetSize = { 0,0 };
 
 	RECT rigion = { 0,0,0,0 };
+
+protected:
+	Event* event = nullptr;
+};
+
+class Button : public Widget
+{
+public:
+	Button(POINT pos, Size size, Event* event) : Widget(pos, size, event) {}
+
+	Button(Size size, Event* event) : Widget(size, event) {}
+
+	Button() = default;
+
+	~Button() override
+	{
+		if (idleImg != nullptr)
+		{
+			delete idleImg;
+		}
+		if (hoverImg != nullptr)
+		{
+			delete hoverImg;
+		}
+		if (pressedImg != nullptr)
+		{
+			delete pressedImg;
+		}
+		if (disabledImg != nullptr)
+		{
+			delete disabledImg;
+		}
+	}
+
+public:
+	Button& setIdleImg(tstring path)
+	{
+		idleImg = new IMAGE;
+		loadimage(idleImg, path.c_str(), widgetSize.w, widgetSize.h);
+		return *this;
+	}
+
+	Button& setHoverImg(tstring path)
+	{
+		hoverImg = new IMAGE;
+		loadimage(hoverImg, path.c_str(), widgetSize.w, widgetSize.h);
+		return *this;
+	}
+
+	Button& setPressedImg(tstring path)
+	{
+		pressedImg = new IMAGE;
+		loadimage(pressedImg, path.c_str(), widgetSize.w, widgetSize.h);
+		return *this;
+	}
+
+	Button& setDisabledImg(tstring path)
+	{
+		disabledImg = new IMAGE;
+		loadimage(disabledImg, path.c_str(), widgetSize.w, widgetSize.h);
+		return *this;
+	}
+
+public:
+	void draw() override
+	{
+		switch (state)
+		{
+		case ButtonState::Idle:
+			putImage_regBack(widgetPos.x, widgetPos.y, idleImg);
+			break;
+		case ButtonState::Hover:
+			putImage_regBack(widgetPos.x, widgetPos.y, hoverImg);
+			break;
+		case ButtonState::Pressed:
+			putImage_regBack(widgetPos.x, widgetPos.y, pressedImg);
+			break;
+		case ButtonState::Disabled:
+			putImage_regBack(widgetPos.x, widgetPos.y, disabledImg);
+			break;
+		}
+	}
+
+	void updateStatus() override
+		// 更新按钮状态
+	{
+		if (state == ButtonState::Disabled)
+		{
+			return;
+		}
+
+		if (isCursorInRigion()) // 鼠标在按钮区域内
+		{
+			if (event->isKeyPressed(VK_LBUTTON))
+			{
+				state = ButtonState::Pressed;
+			}
+			else if (state == ButtonState::Pressed)
+			{
+				OnClick();
+				state = ButtonState::Hover;
+			}
+			else
+			{
+				state = ButtonState::Hover;
+			}
+		}
+		else
+		{
+			state = ButtonState::Idle;
+		}
+	}
+
+protected:
+	virtual void OnClick()
+	{
+		cout << "Button has been clicked!" << endl;
+	}
+
+protected:
+	enum class ButtonState
+	{
+		Idle = 0,
+		Hover,
+		Pressed,
+		Disabled
+	};
+
+	ButtonState state = ButtonState::Idle;
+
+protected:
+	IMAGE* idleImg = nullptr;
+	IMAGE* hoverImg = nullptr;
+	IMAGE* pressedImg = nullptr;
+	IMAGE* disabledImg = nullptr;
+
+private:
+	bool isCursorInRigion()
+	{
+		POINT cursor = event->getCursorPos();
+		return 
+			cursor.x >= rigion.left && cursor.x <= rigion.right && 
+			cursor.y >= rigion.top && cursor.y <= rigion.bottom;
+	}
 };

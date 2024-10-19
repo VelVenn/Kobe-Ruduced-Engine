@@ -8,10 +8,10 @@
 
 using namespace std;
 
-#define _BUTTON_BR
+#define _BR_BUTTON
 #define _DEBUG_
 
-#ifdef _BUTTON_BR
+#ifdef _BR_BUTTON
 
 int main()
 {
@@ -20,6 +20,12 @@ int main()
 	ExMessage msg;
 
 	Event event(&msg);
+
+	Button exitButton({400,400},{336,120},&event);
+	exitButton
+		.setIdleImg(_T("Lib/Button/Game menu/Exit/idle.png"))
+		.setHoverImg(_T("Lib/Button/Game menu/Exit/hover.png"))
+		.setPressedImg(_T("Lib/Button/Game menu/Exit/pressed.png"));
 
 	BeginBatchDraw();
 
@@ -30,6 +36,8 @@ int main()
 			event.handleKeyBoardEvent();
 			event.handleMouseEvent();
 		}
+
+		exitButton.updateStatus();
 
 		cleardevice();
 
@@ -48,6 +56,8 @@ int main()
 		tstring keyInfo = _T("Pressed Key: ") + pressedKey;
 		outtextxy(50, 100, keyInfo.c_str());
 
+		exitButton.draw();
+
 		FlushBatchDraw();
 
 		Sleep(1000 / 120);
@@ -58,7 +68,7 @@ int main()
 	return 0;
 }
 
-#elif defined(_MAIN_BR)
+#elif defined(_BR_MAIN)
 void monitorEvent(Event& event)
 // ¼à¿ØÊÂ¼þ
 {

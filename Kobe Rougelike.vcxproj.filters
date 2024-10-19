@@ -13,28 +13,34 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\Game Obeject">
+    <Filter Include="头文件\Engine">
+      <UniqueIdentifier>{30436644-70d9-4f49-8d13-137938f677be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Engine\Game Obeject">
       <UniqueIdentifier>{4cf54e1a-009a-4e03-a095-4b34e6843d44}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\Widget">
+    <Filter Include="头文件\Engine\Widget">
       <UniqueIdentifier>{c2282302-66f5-4114-b30d-ca7e00274f76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Game Entrance">
+      <UniqueIdentifier>{e7664464-88ca-473f-9bfc-a3972fda1c43}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="reliance.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="tstring.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Charactor.h">
-      <Filter>头文件\Game Obeject</Filter>
+      <Filter>头文件\Engine\Game Obeject</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
-      <Filter>头文件\Game Obeject</Filter>
+      <Filter>头文件\Engine\Game Obeject</Filter>
     </ClInclude>
     <ClInclude Include="Widget.h">
-      <Filter>头文件\Widget</Filter>
+      <Filter>头文件\Engine\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="tstring.h">
+      <Filter>头文件\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="reliance.h">
+      <Filter>头文件\Game Entrance</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
