@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#define _BR_BUTTON
+#define _BR_MAIN
 #define _DEBUG_
 
 #ifdef _BR_BUTTON
@@ -16,6 +16,8 @@ using namespace std;
 int main()
 {
 	initgraph(800, 800);
+	setbkcolor(DARKGRAY);
+	setbkmode(TRANSPARENT);
 
 	ExMessage msg;
 
@@ -79,7 +81,8 @@ void monitorEvent(Event& event)
 int main()
 {
 	// ---------------------- 初始化开始 ----------------------
-	initgraph(1280, 720);
+	initgraph(1280, 720); // 初始化窗口大小
+	setbkmode(TRANSPARENT); // 设置绘制元素的背景填充透明
 
 	bool isRunning = true;
 	ExMessage msg;

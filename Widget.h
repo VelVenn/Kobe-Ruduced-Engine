@@ -12,6 +12,8 @@
 
 using namespace std;
 
+#define DEBUG
+
 class Event // 事件类
 {
 public:
@@ -26,6 +28,7 @@ public:
 
 public:
 	void handleKeyBoardEvent()
+		// 处理键盘事件
 	{
 		if (msg == nullptr)
 		{
@@ -35,10 +38,10 @@ public:
 		switch (msg->message)
 		{
 		case WM_KEYDOWN:
-			keyState[msg->vkcode] = true;
+			keyState[msg->vkcode] = true; // 按键按下
 			break;
 		case WM_KEYUP:
-			keyState[msg->vkcode] = false;
+			keyState[msg->vkcode] = false; // 按键释放
 			break;
 		default:
 			break;
@@ -46,6 +49,7 @@ public:
 	}
 
 	void handleMouseEvent()
+		// 处理鼠标事件 
 	{
 		if (msg == nullptr)
 		{
@@ -54,26 +58,26 @@ public:
 
 		switch (msg->message)
 		{
-		case WM_MOUSEMOVE:
+		case WM_MOUSEMOVE: // 鼠标移动
 			cursorPos.x = msg->x;
 			cursorPos.y = msg->y;
 			break;
-		case WM_LBUTTONDOWN:
+		case WM_LBUTTONDOWN: // 鼠标左键按下
 			keyState[VK_LBUTTON] = true;
 			break;
-		case WM_LBUTTONUP:
+		case WM_LBUTTONUP: // 鼠标左键释放
 			keyState[VK_LBUTTON] = false;
 			break;
-		case WM_RBUTTONDOWN:
+		case WM_RBUTTONDOWN: // 鼠标右键按下
 			keyState[VK_RBUTTON] = true;
 			break;
-		case WM_RBUTTONUP:
+		case WM_RBUTTONUP: // 鼠标右键释放
 			keyState[VK_RBUTTON] = false;
 			break;
-		case WM_MBUTTONDOWN:
+		case WM_MBUTTONDOWN: // 鼠标中键按下
 			keyState[VK_MBUTTON] = true;
 			break;
-		case WM_MBUTTONUP:
+		case WM_MBUTTONUP: // 鼠标中键释放
 			keyState[VK_MBUTTON] = false;
 			break;
 		default:
@@ -105,10 +109,10 @@ public:
 	}
 
 protected:
-	ExMessage* msg = nullptr;
+	ExMessage* msg = nullptr; // 外部设备消息
 
 protected:
-	POINT cursorPos = { 0,0 };
+	POINT cursorPos = { 0,0 }; // 光标位置
 
 protected:
 	vector<bool> keyState = vector<bool>(256, false); // true: pressed, false: unpressed
@@ -153,10 +157,10 @@ public:
 public:
 	Widget(POINT pos, Size size, Event* event) : widgetPos(pos), widgetSize(size), event(event)
 	{
-		rigion.left = pos.x;
-		rigion.top = pos.y;
-		rigion.right = pos.x + size.w;
-		rigion.bottom = pos.y + size.h;
+		Region.left = pos.x;
+		Region.top = pos.y;
+		Region.right = pos.x + size.w;
+		Region.bottom = pos.y + size.h;
 	}
 
 	Widget(Size size, Event* event) : widgetSize(size), event(event) {}
@@ -167,6 +171,7 @@ public:
 public:
 
 	Widget& setRegion(POINT pos = { INT_MAX,INT_MAX }, Size size = { 0,0 })
+		// 设置控件区域
 	{
 		if (pos.x != INT_MAX && pos.y != INT_MAX)
 		{
@@ -177,10 +182,10 @@ public:
 			widgetSize = size;
 		}
 
-		rigion.left = widgetPos.x;
-		rigion.top = widgetPos.y;
-		rigion.right = widgetPos.x + widgetSize.w;
-		rigion.bottom = widgetPos.y + widgetSize.h;
+		Region.left = widgetPos.x;
+		Region.top = widgetPos.y;
+		Region.right = widgetPos.x + widgetSize.w;
+		Region.bottom = widgetPos.y + widgetSize.h;
 
 		return *this;
 	}
@@ -188,29 +193,30 @@ public:
 	Widget& setPos(POINT pos)
 	{
 		widgetPos = pos;
-		rigion.left = pos.x;
-		rigion.top = pos.y;
+		Region.left = pos.x;
+		Region.top = pos.y;
 		return *this;
 	}
 
 	Widget& setSize(Size size)
 	{
 		widgetSize = size;
-		rigion.right = widgetPos.x + size.w;
-		rigion.bottom = widgetPos.y + size.h;
+		Region.right = widgetPos.x + size.w;
+		Region.bottom = widgetPos.y + size.h;
 		return *this;
 	}
 
 	Widget& setEvent(Event* event)
+		// 设置事件处理器
 	{
 		this->event = event;
 		return *this;
 	}
 
 public:
-	virtual void draw() = 0;
+	virtual void draw() = 0; // 绘制控件，由子类实现
 
-	virtual void updateStatus() = 0;
+	virtual void updateStatus() {}; // 更新控件状态，由子类选择性实现
 
 public:
 	POINT getPos() const
@@ -223,16 +229,16 @@ public:
 		return widgetSize;
 	}
 
-	RECT getRigion() const
+	RECT getRegion() const
 	{
-		return rigion;
+		return Region;
 	}
 
 protected:
 	POINT widgetPos = { 0,0 };
 	Size widgetSize = { 0,0 };
 
-	RECT rigion = { 0,0,0,0 };
+	RECT Region = { 0,0,0,0 }; // 控件区域
 
 protected:
 	Event* event = nullptr;
@@ -265,6 +271,7 @@ public:
 		{
 			delete disabledImg;
 		}
+		LOG("Button's resources have been released");
 	}
 
 public:
@@ -319,35 +326,35 @@ public:
 	void updateStatus() override
 		// 更新按钮状态
 	{
-		if (state == ButtonState::Disabled)
+		if (state == ButtonState::Disabled) // 如果按钮被禁用，则不更新状态
 		{
 			return;
 		}
 
-		if (isCursorInRigion()) // 鼠标在按钮区域内
+		if (isCursorInRegion()) // 鼠标在按钮区域内
 		{
 			if (event->isKeyPressed(VK_LBUTTON))
 			{
-				state = ButtonState::Pressed;
+				state = ButtonState::Pressed; // 如果鼠标左键按下，则按钮状态为按下
 			}
 			else if (state == ButtonState::Pressed)
 			{
-				OnClick();
+				OnClick(); // 如果鼠标左键释放，则触发点击事件
 				state = ButtonState::Hover;
 			}
 			else
 			{
-				state = ButtonState::Hover;
+				state = ButtonState::Hover; // 如果鼠标在按钮区域内且未按下左键，则按钮状态为悬停
 			}
 		}
 		else
 		{
-			state = ButtonState::Idle;
+			state = ButtonState::Idle; // 如果鼠标不在按钮区域内，则按钮状态为默认状态
 		}
 	}
 
 protected:
-	virtual void OnClick()
+	virtual void OnClick() // 点击事件
 	{
 		cout << "Button has been clicked!" << endl;
 	}
@@ -355,10 +362,10 @@ protected:
 protected:
 	enum class ButtonState
 	{
-		Idle = 0,
-		Hover,
-		Pressed,
-		Disabled
+		Idle = 0, // 默认状态
+		Hover, // 鼠标悬停
+		Pressed, // 鼠标按下
+		Disabled // 禁用
 	};
 
 	ButtonState state = ButtonState::Idle;
@@ -370,11 +377,110 @@ protected:
 	IMAGE* disabledImg = nullptr;
 
 private:
-	bool isCursorInRigion()
+	bool isCursorInRegion()
 	{
 		POINT cursor = event->getCursorPos();
-		return 
-			cursor.x >= rigion.left && cursor.x <= rigion.right && 
-			cursor.y >= rigion.top && cursor.y <= rigion.bottom;
+		return
+			cursor.x >= Region.left && cursor.x <= Region.right &&
+			cursor.y >= Region.top && cursor.y <= Region.bottom;
 	}
 };
+
+class startButton : public Button
+{
+public:
+	startButton(POINT pos, Size size, Event* event, bool* isGameStart) :
+		Button(pos, size, event), isGameStart(isGameStart) {}
+
+	startButton(Size size, Event* event, bool* isGameStart) : 
+		Button(size, event), isGameStart(isGameStart) {}
+
+	startButton() = default;
+
+	~startButton() override = default;
+
+protected:
+	void OnClick() override
+	{
+		*(isGameStart) = true;
+	}
+
+protected:
+	bool* isGameStart = nullptr;
+};
+
+class exitButton : public Button
+{
+public:
+	exitButton(POINT pos, Size size, Event* event, bool* isRunning) :
+		Button(pos, size, event), isRunning(isRunning) {}
+
+	exitButton(Size size, Event* event, bool* isRunning) :
+		Button(size, event), isRunning(isRunning) {}
+
+	exitButton() = default;
+
+	~exitButton() override = default;
+
+protected:
+	void OnClick() override
+	{
+		*(isRunning) = false;
+	}
+
+protected:
+	bool* isRunning = nullptr;
+};
+
+
+/*
+class Textbox : public Widget
+{
+public:
+	Textbox(POINT pos, Size size, Event* event) : Widget(pos, size, event) {}
+
+	Textbox(Size size, Event* event) : Widget(size, event) {}
+
+	Textbox() = default;
+
+	~Textbox() override
+	{
+		if (background != nullptr)
+		{
+			delete background;
+		}
+	}
+
+public:
+	Textbox& setBackground(tstring path)
+	{
+		background = new IMAGE;
+		loadimage(background, path.c_str());
+		return *this;
+	}
+
+	Textbox& setText(tstring text)
+	{
+		this->text = text;
+		return *this;
+	}
+
+public:
+	void draw() override
+	{
+		RECT textRegion = getRegion();
+
+		if (background != nullptr)
+		{
+			putImage_regBack(widgetPos.x, widgetPos.y, background);
+		}
+		drawtext(text.c_str(),&textRegion, DT_CENTER);
+	}
+
+protected:
+	IMAGE* background = nullptr;
+
+protected:
+	tstring text = _T("");
+};
+*/

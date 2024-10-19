@@ -6,6 +6,8 @@
 #define _USE_MATH_DEFINES
 #define _CRT_SECURE_NO_WARNINGS
 
+#define DEBUG
+
 
 #include <graphics.h>
 #include <conio.h>

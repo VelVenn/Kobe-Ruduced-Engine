@@ -15,14 +15,6 @@
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720 
 
-#define DEBUG
-
-#ifdef DEBUG
-#define LOG(x) std::cout << x << std::endl;
-#else
-#define LOG(x)
-#endif
-
 using namespace std;
 
 typedef struct PlayerPosition
@@ -680,6 +672,37 @@ bool removeEnemyFromList(vector<Enemy*>& enemyList, const vector<Bullet>& clip)
 		}
 	}
 	return true;
+}
+
+bool removeEnemyFromList(vector<Enemy*>& enemyList, const vector<Bullet>& clip, int& score)
+// 从敌人列表中移除死亡的敌人, 并计分
+// enemyList: 敌人列表, clip: 子弹列表, score: 分数
+{
+	auto enemy = enemyList.begin();
+	while (enemy != enemyList.end())
+	{
+		(*enemy)->setActiveStatus(clip); // 设置敌人的存活状态
+		if (!(*enemy)->isActive())
+		{
+			score++;
+			enemy = enemyList.erase(enemy); // 从列表中移除敌人
+		}
+		else
+		{
+			enemy++; // 指向下一个敌人
+		}
+	}
+	return true;
+}
+
+void DrawPlayerScore(int score)
+{
+	static TCHAR text[64]; // 定义一个静态字符数组
+	_stprintf_s(text, _T("当前玩家得分:%d"), score);// 格式化字符串，将得分插入到 text 中
+
+	setbkmode(TRANSPARENT); // 设置背景模式为透明
+	settextcolor(RGB(255, 85, 185));
+	outtextxy(10, 10, text);
 }
 
 void bulletOrbitPlayer
